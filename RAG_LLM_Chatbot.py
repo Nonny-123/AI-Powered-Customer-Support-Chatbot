@@ -8,9 +8,9 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import ChatPromptTemplate
+import os
 
 try:
-    import streamlit as st
     api_key = st.secrets["GEMINI_API_KEY"]
 
 except (ModuleNotFoundError, KeyError):
@@ -38,34 +38,41 @@ for message in st.session_state["chat_history"]:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-loader =  TextLoader("Banking FAQS.txt")
-data = loader.load()
+try:
+    with st.spinner("Loading..."):
+        loader =  TextLoader("Banking FAQS.txt")
+        data = loader.load()
 
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000)
-docs = text_splitter.split_documents(data)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000)
+    docs = text_splitter.split_documents(data)
 
-import os
-persist_path = os.path.abspath("chroma_db")
-os.makedirs(persist_path, exist_ok=True)
+    persist_path = os.path.abspath("chroma_db")
+    os.makedirs(persist_path, exist_ok=True)
 
-vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"), persist_directory=persist_path)
+    vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"), persist_directory=persist_path)
 
-retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 10})
+    retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 10})
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", 
+except Exception as e:
+    st.error(f"There was an error: {e}")
+    st.stop()
+
+try:
+    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", 
                              temperature=0.3, 
                              max_tokens=None,
                              timeout=None)
 
-query = st.chat_input("Say something")
-prompt = query
+except Exception as e:
+    st.error(f"There was an error loading Gemini model: {e}")
+    st.stop()
 
 system_prompt = (
     """
     You are a customer support chatbot for answering customer-related queries.
     Use the following pieces of retrieved context to answer the question.
     If the answers are not in the context, you can answer to the best of your ability
-    but do not lie. If you do not know the answer, say that you do not know. Use
+    but do not lie. If you do not know the answer, say that you do not know.
     Use a concise and friendly tone, be professional and informative.
     When the conversation begins the first time introduce, as the 
     conversation continues do not introduce yourself again unless
@@ -82,6 +89,9 @@ prompt = ChatPromptTemplate.from_messages(
         ("human", "{input}"),
     ]
 )
+
+query = st.chat_input("Say something")
+#prompt = query
 
 if query:
     st.session_state["chat_history"].append({"role": "user", "content": query})
