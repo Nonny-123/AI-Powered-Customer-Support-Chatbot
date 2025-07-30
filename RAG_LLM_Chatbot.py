@@ -1,7 +1,7 @@
 import streamlit as st
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
@@ -28,7 +28,7 @@ def get_retriever(_api_key):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     docs = text_splitter.split_documents(data)
 
-    vectorstore = Chroma.from_documents(
+    vectorstore = FAISS.from_documents(
     documents=docs,
     embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=_api_key)
     )
