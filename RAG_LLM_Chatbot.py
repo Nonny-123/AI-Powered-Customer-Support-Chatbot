@@ -2,7 +2,7 @@ import streamlit as st
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, GoogleGenerativeAI
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import ChatPromptTemplate
@@ -58,7 +58,7 @@ def get_llm_chain(retriever, api_key):
         ("human", "{input}"),
     ])
 
-    llm = ChatGoogleGenerativeAI(
+    llm = GoogleGenerativeAI(
         model="gemini-1.5-flash-latest",
         temperature=0.3,
         google_api_key=api_key
