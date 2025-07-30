@@ -49,7 +49,7 @@ try:
     persist_path = os.path.abspath("chroma_db")
     os.makedirs(persist_path, exist_ok=True)
 
-    vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"), persist_directory=persist_path)
+    vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key), persist_directory=persist_path)
 
     retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 10})
 
@@ -59,7 +59,8 @@ except Exception as e:
 
 try:
     llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", 
-                             temperature=0.3, 
+                             temperature=0.3,
+                             google_api_key=api_key, 
                              max_tokens=None,
                              timeout=None)
 
