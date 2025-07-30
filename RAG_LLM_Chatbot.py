@@ -107,9 +107,7 @@ if query:
         answer = response["answer"]
 
     st.session_state["chat_history"].append({"role": "assistant", "content": answer})
-    # with st.chat_message("assistant"):
-    #     st.markdown(answer)
-    #     st.session_state["chat_history"].append({"role": "assistant", "content": answer})
+    
     st.rerun()
     
     
