@@ -103,7 +103,7 @@ if query := st.chat_input("Ask me anything about your banking..."):
 
     # Get and display assistant response
     with st.spinner("Thinking..."):
-        response = rag_chain.invoke({"input": query, "chat_history": []})
+        response = rag_chain.invoke({"input": query})
         answer = response.get("answer", "I'm sorry, I couldn't find an answer.")
 
     st.session_state.chat_history.append({"role": "assistant", "content": answer})
