@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from langchain_community.document_loaders import TextLoader
+from langchain_community.document_loaders import WebBaseLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -40,7 +40,8 @@ for message in st.session_state["chat_history"]:
 
 try:
     with st.spinner("Loading..."):
-        loader =  TextLoader("Banking FAQS.txt")
+        url = "https://raw.githubusercontent.com/Nonny-123/AI-Powered-Customer-Support-Chatbot/main/Banking%20FAQS.txt"
+        loader =  WebBaseLoader(url)
         data = loader.load()
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000)
