@@ -50,7 +50,8 @@ try:
     persist_path = os.path.abspath("chroma_db")
     os.makedirs(persist_path, exist_ok=True)
 
-    vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key), persist_directory=persist_path)
+    vectorstore = Chroma(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key), persist_directory="chroma_db")
+    vectorstore.persist()
 
     retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 10})
 
