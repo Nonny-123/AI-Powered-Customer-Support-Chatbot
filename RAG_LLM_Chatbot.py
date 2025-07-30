@@ -9,8 +9,14 @@ from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import ChatPromptTemplate
 
-from dotenv import load_dotenv
-load_dotenv()
+try:
+    import streamlit as st
+    api_key = st.secrets["GEMINI_API_KEY"]
+
+except (ModuleNotFoundError, KeyError):
+    from dotenv import load_dotenv
+    load_dotenv()
+    api_key = os.getenv("GEMINI_API_KEY")
 
 st.title("Banking Customer Support Chatbot")
 
