@@ -29,9 +29,10 @@ def get_retriever(_api_key):
     docs = text_splitter.split_documents(data)
 
     vectorstore = Chroma.from_documents(
-        documents=docs,
-        embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=_api_key)
-    )
+    documents=docs,
+    embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=_api_key),
+    persist_directory="chroma_db")
+    
     retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
     return retriever
 
