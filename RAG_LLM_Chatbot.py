@@ -6,6 +6,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGener
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import ChatPromptTemplate
+from langchain_core.runnables.history import RunnableWithoutMessageHistory
 import os
 
 #API Key Configuration
@@ -65,7 +66,9 @@ def get_llm_chain(retriever, api_key):
     )
 
     Youtube_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = create_retrieval_chain(retriever, Youtube_chain)
+    rag_chain = RunnableWithoutMessageHistory(
+    create_retrieval_chain(retriever, Youtube_chain)
+    )
     return rag_chain
 
 #Streamlit App UI
