@@ -5,3 +5,4 @@ chromadb==0.4.15
 langchain-google-genai==0.0.9
 python-dotenv==1.0.1
 protobuf
+beautifulsoup4
