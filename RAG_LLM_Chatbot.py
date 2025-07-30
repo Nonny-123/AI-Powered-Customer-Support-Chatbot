@@ -6,7 +6,6 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGener
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import ChatPromptTemplate
-from langchain_core.runnables.history import RunnableWithoutMessageHistory
 import os
 
 #API Key Configuration
@@ -66,9 +65,7 @@ def get_llm_chain(retriever, api_key):
     )
 
     Youtube_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = RunnableWithoutMessageHistory(
-    create_retrieval_chain(retriever, Youtube_chain)
-    )
+    rag_chain = create_retrieval_chain(retriever, Youtube_chain)
     return rag_chain
 
 #Streamlit App UI
@@ -106,7 +103,7 @@ if query := st.chat_input("Ask me anything about your banking..."):
 
     # Get and display assistant response
     with st.spinner("Thinking..."):
-        response = rag_chain.invoke({"input": query})
+        response = rag_chain.invoke({"input": query, "chat_history": []})
         answer = response.get("answer", "I'm sorry, I couldn't find an answer.")
 
     st.session_state.chat_history.append({"role": "assistant", "content": answer})
