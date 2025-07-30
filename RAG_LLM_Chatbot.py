@@ -103,8 +103,11 @@ if query := st.chat_input("Ask me anything about your banking..."):
 
     # Get and display assistant response
     with st.spinner("Thinking..."):
-        response = rag_chain.invoke({"input": query})
-        answer = response.get("answer", "I'm sorry, I couldn't find an answer.")
+        try:
+            response = rag_chain.invoke({"input": query})
+            answer = response.get("answer", "I'm sorry, I couldn't find an answer.")
+        except Exception as e:
+            answer = "We're currently experiencing high traffic or usage limits. Please try again later."
 
     st.session_state.chat_history.append({"role": "assistant", "content": answer})
     
