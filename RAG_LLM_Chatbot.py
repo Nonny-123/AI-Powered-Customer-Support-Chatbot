@@ -30,8 +30,8 @@ def get_retriever(_api_key):
 
     vectorstore = Chroma.from_documents(
     documents=docs,
-    embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=_api_key),
-    persist_directory="chroma_db")
+    embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=_api_key)
+    )
     
     retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
     return retriever
