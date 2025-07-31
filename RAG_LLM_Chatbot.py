@@ -69,7 +69,7 @@ def get_llm_chain(retriever, api_key):
     return rag_chain
 
 #Streamlit App UI
-st.title("Banking Customer Support Chatbot 🤖")
+st.title("Banking Customer Support Chatbot")
 
 # Initialize chat history
 if "chat_history" not in st.session_state:
@@ -88,7 +88,17 @@ for message in st.session_state.chat_history:
 # Main App Logic
 with st.spinner("Thinking..."):
         try:
-            response = rag_chain.invoke({"input": query})
+            chat_history = [
+            (msg["role"], msg["content"])
+            for msg in st.session_state.chat_history
+            if msg["role"] in ["user", "assistant"]
+            ]
+
+            # Invoke the chain with input and chat history
+            response = rag_chain.invoke({
+    "input": query,
+    "chat_history": chat_history
+})
 
             if isinstance(response, dict) and "answer" in response:
                 answer = response["answer"]
