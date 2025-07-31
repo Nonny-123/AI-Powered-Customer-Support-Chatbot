@@ -86,13 +86,20 @@ for message in st.session_state.chat_history:
         st.markdown(message["content"])
 
 # Main App Logic
-try:
-    with st.spinner("Preparing chatbot..."):
-        retriever = get_retriever(api_key)
-        rag_chain = get_llm_chain(retriever, api_key)
-except Exception as e:
-    st.error(f"An error occurred during setup: {e}")
-    st.stop()
+with st.spinner("Thinking..."):
+        try:
+            response = rag_chain.invoke({"input": query})
+
+            if isinstance(response, dict) and "answer" in response:
+                answer = response["answer"]
+            elif isinstance(response, str):
+                answer = response
+            else:
+                answer = "I'm sorry, I couldn't find an answer."
+
+        except Exception as e:
+            answer = "We're currently experiencing high traffic or usage limits. Please try again later."
+        st.stop()
 
 # Handle user input
 if query := st.chat_input("Ask me anything about your banking..."):
