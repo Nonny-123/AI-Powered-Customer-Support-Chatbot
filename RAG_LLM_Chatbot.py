@@ -77,7 +77,7 @@ if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
     st.session_state.chat_history.append({
         "role": "assistant",
-        "content": "Hi there! I'm Bash, your banking customer support chatbot. How can I help you today?"
+        "content": "Hi there!"
     })
 
 # Display chat messages from history
